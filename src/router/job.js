@@ -3,7 +3,8 @@ const router = express.Router();
 const cron = require("node-cron");
 const fs = require("fs");
 const {API} = require("../constansts/endPoints");
-const {createFile} = require("../controller/JobController")
+const {createFile} = require("../controller/FileController")
+const {seekData}= require("../controller/ApiController")
 
 router.get(API.GET, (req, res) => {
     res.status(200).send({
@@ -13,6 +14,10 @@ router.get(API.GET, (req, res) => {
 
 cron.schedule('* * * * *', () => {
     createFile();
+});
+
+cron.schedule('*/5 * * * * *', () => {
+    seekData();
 });
 
 module.exports = router;
