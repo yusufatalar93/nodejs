@@ -1,3 +1,3 @@
-const filePath = './resources/done.txt';
+const FILE_PATH = './resources/done.txt';
 
-module.exports = {filePath}
+module.exports = { FILE_PATH}
