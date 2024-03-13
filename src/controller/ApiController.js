@@ -1,6 +1,6 @@
-const {dbConnection} = require("../config/DbConfig")
-const {writeResult, readFile} = require("./FileController")
-
+const {writeToFile, renameFile, readFile, deleteFile} = require("./FileController")
+const {saveData} = require("../service/ApiService");
+const {API_1_FILE_NAME, API_2_FILE_NAME} = require("../constants/constants")
 const save = (req, res) => {
     res.status(200).send({
         message: "save message"
@@ -8,26 +8,33 @@ const save = (req, res) => {
 }
 
 const get = (req, res) => {
-    const success = Math.random() < 0.5;
-    if (success) {
-        writeResult("1");
-        res.status(200).send({
-            message: "success get request response"
-        });
-    } else {
-        writeResult("0");
-        res.status(500).send({
-            message: "fail get request response"
-        });
-    }
+    const result = Math.random() < 0.5 ? "1" : "0";
+    writeToFile(API_1_FILE_NAME, result, (success) => {
+        if (success) {
+            console.log(`Result = ${result} successfully registered to file`)
+        } else {
+            console.log(`Error occurred while result = ${result} registering to file`)
+        }
+    });
+    res.status(200).send({
+        message: `Result = ${result}`
+    });
 }
 
-const seekData = () => {
-    const data = readFile();
-    const id = new Date().getTime();
-    const sql = `INSERT INTO customer_agents VALUES (${id}, 0, 0, ${data});`;
-    dbConnection.query(sql, function (err, result) {
-        if (err) throw err;
+const seekData = (file) => {
+    readFile(file, (data) => {
+        if (data) {
+            saveData(data,file);
+            deleteFile(file, (success) => {
+                if (success) {
+                    console.log(`File = ${file} successfully deleted`)
+                } else {
+                    console.log(`Error occurred while deleting file`)
+                }
+            })
+        } else {
+            console.log("No insertion because no data exist")
+        }
     });
 }
 module.exports = {get, save, seekData}

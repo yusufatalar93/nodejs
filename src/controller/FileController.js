@@ -1,35 +1,55 @@
 const fs = require("fs");
-const {FILE_PATH} = require("../constansts/constants")
 
-
-const createFile = () => {
-    console.log('Cron job executed at:', new Date().toLocaleString());
-    fs.open(FILE_PATH, 'a', (err) => {
+const createFile = (file, callback) => {
+    fs.open(file, 'a', (err) => {
         if (err) {
-            console.error('Error creating file-project:', err);
-            return;
+            console.error(err);
+            callback(false);
+        } else {
+            callback(true);
         }
-        console.log('File created successfully');
     });
-}
-const writeResult = (result) => {
-    fs.appendFile(FILE_PATH, result, (err) => {
+};
+const writeToFile = (file, content, callback) => {
+    fs.appendFile(file, content, (err) => {
         if (err) {
-            console.error(`Error occurred while writing result = ${result} to file`, err);
-            return;
+            callback(false);
         }
-        console.log(`Wrote result = ${result} to file successfully.`);
+        callback(true);
     });
 }
 
-const readFile = () => {
-    try {
-        const data = fs.readFileSync(FILE_PATH, 'utf8');
-        return data;
-    } catch (err) {
-        console.error("Error reading the file:", err);
-        throw err;
-    }
+const readFile = (file, callback) => {
+    fs.readFile(file, 'utf8', (err, data) => {
+        if (err) {
+            console.error(err);
+            callback(null);
+        } else {
+            callback(data);
+        }
+    });
+}
+const renameFile = (oldFile, newFile, callback) => {
+    fs.rename(oldFile, newFile, (err) => {
+        if (err) {
+            console.error(err);
+            callback(false);
+        } else {
+            callback(true);
+        }
+    });
 }
 
-module.exports = {createFile, writeResult, readFile}
+const deleteFile = (file, callback) => {
+    fs.unlink(file, (err) => {
+        if (err) {
+            console.error(err);
+            callback(false);
+        } else {
+            callback(true);
+        }
+    });
+
+}
+
+module.exports = {createFile, writeToFile, readFile, deleteFile, renameFile}
