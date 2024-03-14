@@ -1,4 +1,5 @@
-const {dbConnection} = require("../config/DbConfig")
+const {dbConfig} = require("../config/config");
+const dbConnection = dbConfig.dbConnection;
 
 const saveData = async (data, apiName) => {
     console.log("Saving data start")

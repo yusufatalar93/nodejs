@@ -41,7 +41,6 @@ const deleteFile = async (file) => {
             throw err;
         }
     });
-
 }
 
 const replaceFiles = async (api) => {
