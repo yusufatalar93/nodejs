@@ -3,7 +3,6 @@ const {createFile, replaceFiles} = require("../controller/FileController")
 const {seekData} = require("../controller/ApiController");
 const {API_LIST} = require("../constants/constants")
 
-
 console.log("Creating first files");
 for (const api of API_LIST) {
     createFile(api.filePath).then(() => {
