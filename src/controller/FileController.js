@@ -1,7 +1,7 @@
 const fs = require("fs");
 
 const createFile = async (file) => {
-    fs.open(file, 'a', (err) => {
+    await fs.open(file, 'a', (err) => {
         if (err) {
             throw err;
         }
@@ -9,7 +9,7 @@ const createFile = async (file) => {
 };
 
 const writeToFile = async (file, content, callback) => {
-    fs.appendFile(file, content, (err) => {
+    await fs.appendFile(file, content, (err) => {
         if (err) {
             throw err;
         }
@@ -28,7 +28,7 @@ const readFile = async (file, callback) => {
 }
 
 const renameFile = async (oldFile, newFile) => {
-    fs.rename(oldFile, newFile, (err) => {
+    await fs.rename(oldFile, newFile, (err) => {
         if (err) {
             throw err;
         }
@@ -36,7 +36,7 @@ const renameFile = async (oldFile, newFile) => {
 }
 
 const deleteFile = async (file) => {
-    fs.unlink(file, (err) => {
+    await fs.unlink(file, (err) => {
         if (err) {
             throw err;
         }
