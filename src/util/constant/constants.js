@@ -13,4 +13,4 @@ const API_LIST = [
 const API_1_FILE_NAME = FILE_BASE_PATH + 'api1.txt'
 const API_2_FILE_NAME = FILE_BASE_PATH + 'api2.txt'
 
-module.exports = {API_1_FILE_NAME, API_2_FILE_NAME, API_LIST}
+module.exports = {API_1_FILE_NAME, API_2_FILE_NAME, API_LIST, FILE_BASE_PATH}

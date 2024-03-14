@@ -1,9 +1,12 @@
 const cron = require("node-cron");
-const {createFile, replaceFiles} = require("../controller/FileController")
+const {createFile, replaceFiles, createDirectory} = require("../controller/FileController")
 const {seekData} = require("../controller/ApiController");
-const {API_LIST} = require("../util/constant/constants")
+const {API_LIST} = require("../util/constant/constants");
+const {FILE_BASE_PATH} = require('../util/constant/constants')
 
 console.log("Creating first files");
+createDirectory(FILE_BASE_PATH);
+
 for (const api of API_LIST) {
     createFile(api.filePath).then(() => {
         console.log(`${api.apiName} first file successfully created`)

@@ -70,4 +70,15 @@ const replaceFiles = async (api) => {
         throw err;
     }
 }
-module.exports = {createFile, writeToFile, readFile, deleteFile, renameFile, replaceFiles}
+
+const createDirectory = (path) => {
+    try {
+        fs.mkdirSync(path, { recursive: true });
+        console.log(`Directory ${path} already exist or successfully created.`);
+    } catch (err) {
+        console.error(`Error occurred while creating directory ${path}. Err = ${err}`);
+        throw err;
+    }
+};
+
+module.exports = {createFile, writeToFile, readFile, deleteFile, renameFile, replaceFiles, createDirectory}
