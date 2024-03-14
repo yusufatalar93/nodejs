@@ -14,32 +14,33 @@ for (const api of API_LIST) {
 }
 console.log("Fist files successfully created");
 
-const replaceFileJob = cron.schedule('* * * * *', async () => {
+const createNewFilesJob = cron.schedule('* * * * *', async () => {
+    console.log(`Create new files job start at = ${Date.now()}`);
     try {
         for (const api of API_LIST) {
             await replaceFiles(api);
-            console.log(`Replaced file for api = ${api.apiName}`);
+            console.log(`Replaced files for api = ${api.apiName}`);
         }
+        console.log(`Files successfully created at = ${Date.now()}`);
     } catch (err) {
-        console.error(`Error occurred in replace files job. Error =  ${err}`);
+        console.error(`Error occurred in create files job. Error =  ${err}`);
     }
 });
 
 
-const saveJob = cron.schedule('*/25 * * * * *', async () => {
+const saveFilesDataJob = cron.schedule('*/25 * * * * *', async () => {
+    console.log(`Save data job start at = ${Date.now()}`);
     try {
-        console.log(`Save data job start at = ${Date.now()}`);
-        const promises = API_LIST.map(async (api) => {
+        for (const api of API_LIST) {
             const apiDoneFile = api.filePath.replace('.txt', '_done.txt');
             await seekData(apiDoneFile, api.apiName);
             console.log(`Saving ${api.apiName} data successfully finished at = ${Date.now()}`);
-        });
-        await Promise.all(promises);
-        console.log(`Save data job successfully finished at = ${Date.now()}`);
+        }
+        console.log(`All data successfully saved at = ${Date.now()}`);
     } catch (err) {
         console.error(`Error occurred in save job. Error = ${err}`);
     }
 });
 
-replaceFileJob.start();
-saveJob.start();
+createNewFilesJob.start();
+saveFilesDataJob.start();
