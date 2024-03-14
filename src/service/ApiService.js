@@ -1,4 +1,4 @@
-const {dbConfig} = require("../config/config");
+const {dbConfig} = require("../config/idex");
 const dbConnection = dbConfig.dbConnection;
 
 const saveData = async (data, apiName) => {

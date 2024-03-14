@@ -1,6 +1,6 @@
 const {writeToFile, readFile, deleteFile} = require("./FileController")
 const {saveData} = require("../service/ApiService");
-const {API_1_FILE_NAME, API_2_FILE_NAME} = require("../constants/constants")
+const {API_1_FILE_NAME, API_2_FILE_NAME} = require("../util/constant/constants")
 
 const api1 = async (req, res) => {
     const result = Math.random() < 0.5 ? "1" : "0";

@@ -1,7 +1,7 @@
 const cron = require("node-cron");
 const {createFile, replaceFiles} = require("../controller/FileController")
 const {seekData} = require("../controller/ApiController");
-const {API_LIST} = require("../constants/constants")
+const {API_LIST} = require("../util/constant/constants")
 
 console.log("Creating first files");
 for (const api of API_LIST) {
@@ -28,8 +28,8 @@ const createFileJob = cron.schedule('* * * * *', () => {
 const saveJob = cron.schedule('*/25 * * * * *', () => {
     console.log(`Save data job start at = ${Date.now()}`);
     for (const api of API_LIST) {
-        const api1DoneFile = api.filePath.replace('.txt', '_done.txt');
-        seekData(api1DoneFile, api.apiName).then(() => {
+        const apiDoneFile = api.filePath.replace('.txt', '_done.txt');
+        seekData(apiDoneFile, api.apiName).then(() => {
             console.log(`Saving ${api.apiName} data successfully finished at = ${Date.now()}`)
         }).catch((err) => {
             console.error(`Error occurred  while saving ${api.apiName} data. Error = ${err}`);
