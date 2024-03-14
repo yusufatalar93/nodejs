@@ -1,4 +1,4 @@
-const {writeToFile, renameFile, readFile, deleteFile} = require("./FileController")
+const {writeToFile, readFile, deleteFile} = require("./FileController")
 const {saveData} = require("../service/ApiService");
 const {API_1_FILE_NAME, API_2_FILE_NAME} = require("../constants/constants")
 
@@ -8,22 +8,21 @@ const api1 = async (req, res) => {
         res.json({
             message: `Result = ${result}`
         })).catch((err) => {
-        console.log(`Error occurred while writing result to file. Error = ${err}`);
+        console.error(`Error occurred while writing result to file. Error = ${err}`);
         throw err;
     });
 }
 
-const api2 = (req, res) => {
+const api2 = async (req, res) => {
     const result = Math.random() < 0.5 ? "1" : "0";
     writeToFile(API_2_FILE_NAME, result).then(() =>
         res.json({
             message: `Result = ${result}`
         })).catch((err) => {
-        console.log(`Error occurred while writing result to file. Error = ${err}`);
+        console.error(`Error occurred while writing result to file. Error = ${err}`);
         throw err;
     });
 }
-
 
 const seekData = async (file, name) => {
     await readFile(file, async (data) => {
@@ -43,4 +42,5 @@ const seekData = async (file, name) => {
         }
     });
 }
+
 module.exports = {api1, api2, seekData}
