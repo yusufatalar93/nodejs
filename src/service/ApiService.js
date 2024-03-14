@@ -3,11 +3,19 @@ const dbConnection = dbConfig.dbConnection;
 
 const saveData = async (data, apiName) => {
     console.log("Saving data start")
-    const date = new Date().getTime();
-    const {success, fail} = extractResults(data);
-    const sql = 'INSERT INTO api_results (api_name, date, success, fail) VALUES (?, ?, ?, ?)';
-    dbConnection.query(sql, [apiName, date, success, fail], (err) => {
-        if (err) throw err;
+    return new Promise((resolve, reject) => {
+        const date = new Date().getTime();
+        const {success, fail} = extractResults(data);
+        const sql = 'INSERT INTO api_results (api_name, date, success, fail) VALUES (?, ?, ?, ?)';
+        dbConnection.query(sql, [apiName, date, success, fail], (err) => {
+            if (err) {
+                console.error(`Error occurred while saving data for ${apiName}. Err = ${err}`);
+                reject(err);
+            } else {
+                console.log(`Data successfully saved for ${apiName}`);
+                resolve();
+            }
+        });
     });
 }
 const extractResults = (data) => {

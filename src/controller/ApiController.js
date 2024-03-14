@@ -34,8 +34,10 @@ const seekData = async (file, name) => {
                     console.error(`Error occurred while deleting file. Err = ${err}`);
                     throw err;
                 });
+                console.log(`Data for api ${name} successfully saved`)
             }).catch((err) => {
-                console.error(`Error occurred while saving file content results. Err = ${err}`)
+                console.error(`Error occurred while saving file content results. Err = ${err}`);
+                throw err;
             });
         } else {
             console.log("No insertion because no data exist")

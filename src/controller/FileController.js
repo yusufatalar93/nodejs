@@ -1,20 +1,30 @@
 const fs = require("fs");
+const util = require('util');
+
+const fsOpen = util.promisify(fs.open);
+const fsAppendFile = util.promisify(fs.appendFile);
+const fsRename = util.promisify(fs.rename);
+const fsUnlink = util.promisify(fs.unlink);
 
 const createFile = async (file) => {
-    await fs.open(file, 'a', (err) => {
-        if (err) {
-            throw err;
-        }
-    });
+    try {
+        await fsOpen(file, 'a');
+        console.log(`File ${file} successfully created.`);
+    } catch (err) {
+        console.error(`Error occurred while creating file ${file}. Err = ${err}`);
+        throw err;
+    }
 };
 
-const writeToFile = async (file, content, callback) => {
-    await fs.appendFile(file, content, (err) => {
-        if (err) {
-            throw err;
-        }
-    });
-}
+const writeToFile = async (file, content) => {
+    try {
+        await fsAppendFile(file, content);
+        console.log(`Content successfully appended to file ${file}.`);
+    } catch (err) {
+        console.error(`Error occurred while writing to file ${file}. Err = ${err}`);
+        throw err;
+    }
+};
 
 const readFile = async (file, callback) => {
     fs.readFile(file, 'utf8', (err, data) => {
@@ -28,20 +38,24 @@ const readFile = async (file, callback) => {
 }
 
 const renameFile = async (oldFile, newFile) => {
-    await fs.rename(oldFile, newFile, (err) => {
-        if (err) {
-            throw err;
-        }
-    });
-}
+    try {
+        await fsRename(oldFile, newFile);
+        console.log(`File ${oldFile} successfully renamed to ${newFile}.`);
+    } catch (err) {
+        console.error(`Error occurred while renaming file ${oldFile} to ${newFile}. Err = ${err}`);
+        throw err;
+    }
+};
 
 const deleteFile = async (file) => {
-    await fs.unlink(file, (err) => {
-        if (err) {
-            throw err;
-        }
-    });
-}
+    try {
+        await fsUnlink(file);
+        console.log(`File ${file} successfully deleted.`);
+    } catch (err) {
+        console.error(`Error occurred while deleting file ${file}. Err = ${err}`);
+        throw err;
+    }
+};
 
 const replaceFiles = async (api) => {
     const filePath = api.filePath;
