@@ -5,7 +5,7 @@ const fsOpen = util.promisify(fs.open);
 const fsAppendFile = util.promisify(fs.appendFile);
 const fsRename = util.promisify(fs.rename);
 const fsUnlink = util.promisify(fs.unlink);
-
+const fsReadFile = util.promisify(fs.readFile);
 const createFile = async (file) => {
     try {
         await fsOpen(file, 'a');
@@ -26,15 +26,15 @@ const writeToFile = async (file, content) => {
     }
 };
 
-const readFile = async (file, callback) => {
-    fs.readFile(file, 'utf8', (err, data) => {
-        if (err) {
-            console.error(`Error occurred while file is reading.Error = ${err}`);
-            callback(null);
-        } else {
-            callback(data);
-        }
-    });
+const readFile = async (file) => {
+    try {
+        const data = await fsReadFile(file, 'utf8');
+        console.log(`File = ${file} read successfully:`, data);
+        return data;
+    } catch (err) {
+        console.error('Error occurred while reading file:', err);
+        return null;
+    }
 }
 
 const renameFile = async (oldFile, newFile) => {
@@ -58,20 +58,16 @@ const deleteFile = async (file) => {
 };
 
 const replaceFiles = async (api) => {
-    const filePath = api.filePath;
-    const apiDoneFile = filePath.replace('.txt', '_done.txt');
-    renameFile(filePath, apiDoneFile).then(() => {
+    try {
+        const filePath = api.filePath;
+        const apiDoneFile = filePath.replace('.txt', '_done.txt');
+        await renameFile(filePath, apiDoneFile);
         console.log("File successfully renamed");
-        createFile(filePath).then(() => {
-            console.log(`File successfully created for api = ${api.apiName}`);
-        }).catch((err) => {
-            console.error(`Error occurred while creating api = ${api.apiName} file. Err = ${err}`);
-            throw err;
-        });
-    }).catch((err) => {
-        console.error(`Error occurred while renaming api = ${api.apiName} file. Err = ${err}`);
+        await createFile(filePath);
+        console.log(`File successfully created for api = ${api.apiName}`);
+    } catch (err) {
+        console.error(`An error occurred: ${err}`);
         throw err;
-    });
+    }
 }
-
 module.exports = {createFile, writeToFile, readFile, deleteFile, renameFile, replaceFiles}

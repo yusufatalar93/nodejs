@@ -14,30 +14,32 @@ for (const api of API_LIST) {
 }
 console.log("Fist files successfully created");
 
-const createFileJob = cron.schedule('* * * * *', () => {
-    for (const api of API_LIST) {
-        replaceFiles(api).then(() => {
-            console.log(`Replaced file for api = ${api.apiName}`)
-        }).catch((err) => {
-            console.error(`Replace file for api = ${api.apiName} failed`)
-            throw err;
-        })
+const replaceFileJob = cron.schedule('* * * * *', async () => {
+    try {
+        for (const api of API_LIST) {
+            await replaceFiles(api);
+            console.log(`Replaced file for api = ${api.apiName}`);
+        }
+    } catch (err) {
+        console.error(`Error occurred in replace files job. Error =  ${err}`);
     }
 });
 
-const saveJob = cron.schedule('*/25 * * * * *', () => {
-    console.log(`Save data job start at = ${Date.now()}`);
-    for (const api of API_LIST) {
-        const apiDoneFile = api.filePath.replace('.txt', '_done.txt');
-        seekData(apiDoneFile, api.apiName).then(() => {
-            console.log(`Saving ${api.apiName} data successfully finished at = ${Date.now()}`)
-        }).catch((err) => {
-            console.error(`Error occurred  while saving ${api.apiName} data. Error = ${err}`);
-            throw err;
+
+const saveJob = cron.schedule('*/25 * * * * *', async () => {
+    try {
+        console.log(`Save data job start at = ${Date.now()}`);
+        const promises = API_LIST.map(async (api) => {
+            const apiDoneFile = api.filePath.replace('.txt', '_done.txt');
+            await seekData(apiDoneFile, api.apiName);
+            console.log(`Saving ${api.apiName} data successfully finished at = ${Date.now()}`);
         });
+        await Promise.all(promises);
+        console.log(`Save data job successfully finished at = ${Date.now()}`);
+    } catch (err) {
+        console.error(`Error occurred in save job. Error = ${err}`);
     }
-    console.log(`Save data job successfully finished at = ${Date.now()}`)
 });
 
-createFileJob.start();
+replaceFileJob.start();
 saveJob.start();

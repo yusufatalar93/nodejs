@@ -4,45 +4,50 @@ const {API_1_FILE_NAME, API_2_FILE_NAME} = require("../util/constant/constants")
 
 const api1 = async (req, res) => {
     const result = Math.random() < 0.5 ? "1" : "0";
-    writeToFile(API_1_FILE_NAME, result).then(() =>
+    try {
+        await writeToFile(API_1_FILE_NAME, result);
         res.json({
             message: `Result = ${result}`
-        })).catch((err) => {
+        });
+    } catch (err) {
         console.error(`Error occurred while writing result to file. Error = ${err}`);
-        throw err;
-    });
+        res.status(500).json({
+            error: "Internal server error"
+        });
+    }
 }
 
 const api2 = async (req, res) => {
     const result = Math.random() < 0.5 ? "1" : "0";
-    writeToFile(API_2_FILE_NAME, result).then(() =>
+    try {
+        await writeToFile(API_2_FILE_NAME, result);
         res.json({
             message: `Result = ${result}`
-        })).catch((err) => {
+        });
+    } catch (err) {
         console.error(`Error occurred while writing result to file. Error = ${err}`);
-        throw err;
-    });
+        res.status(500).json({
+            error: "Internal server error"
+        });
+    }
 }
 
 const seekData = async (file, name) => {
-    await readFile(file, async (data) => {
+    try {
+        const data = await readFile(file);
         if (data != null) {
-            saveData(data, name).then(() => {
-                deleteFile(file).then(() => {
-                    console.error(`File successfully deleted. File = ${file}`);
-                }).catch((err) => {
-                    console.error(`Error occurred while deleting file. Err = ${err}`);
-                    throw err;
-                });
-                console.log(`Data for api ${name} successfully saved`)
-            }).catch((err) => {
-                console.error(`Error occurred while saving file content results. Err = ${err}`);
-                throw err;
-            });
+            await saveData(data, name);
+            await deleteFile(file);
+            console.error(`File successfully deleted. File = ${file}`);
+            console.log(`Data for api ${name} successfully saved`);
         } else {
-            console.log("No insertion because no data exist")
+            console.log("No insertion because no data exist");
         }
-    });
+    } catch (err) {
+        console.error(`Error occurred while saving data process. Error =  ${err}`);
+        throw err;
+    }
 }
+
 
 module.exports = {api1, api2, seekData}
