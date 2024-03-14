@@ -7,6 +7,7 @@ const createFile = async (file) => {
         }
     });
 };
+
 const writeToFile = async (file, content, callback) => {
     fs.appendFile(file, content, (err) => {
         if (err) {
@@ -25,14 +26,14 @@ const readFile = async (file, callback) => {
         }
     });
 }
-const renameFile= async (oldFile, newFile) => {
+
+const renameFile = async (oldFile, newFile) => {
     fs.rename(oldFile, newFile, (err) => {
         if (err) {
             throw err;
         }
     });
 }
-
 
 const deleteFile = async (file) => {
     fs.unlink(file, (err) => {
@@ -43,4 +44,21 @@ const deleteFile = async (file) => {
 
 }
 
-module.exports = {createFile, writeToFile, readFile, deleteFile, renameFile}
+const replaceFiles = async (api) => {
+    const filePath = api.filePath;
+    const apiDoneFile = filePath.replace('.txt', '_done.txt');
+    renameFile(filePath, apiDoneFile).then(() => {
+        console.log("File successfully renamed");
+        createFile(filePath).then(() => {
+            console.log(`File successfully created for api = ${api.apiName}`);
+        }).catch((err) => {
+            console.error(`Error occurred while creating api = ${api.apiName} file. Err = ${err}`);
+            throw err;
+        });
+    }).catch((err) => {
+        console.error(`Error occurred while renaming api = ${api.apiName} file. Err = ${err}`);
+        throw err;
+    });
+}
+
+module.exports = {createFile, writeToFile, readFile, deleteFile, renameFile, replaceFiles}

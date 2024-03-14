@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const {port} = require('./config/config');
 const router = require("./router/indexRouter");
-const job = require("./router/job")
+const job = require("./job/job")
 
 app.use("/api", router);
 app.listen(port, () => {

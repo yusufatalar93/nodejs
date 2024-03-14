@@ -1,6 +1,6 @@
-const GET = '/get';
-const SAVE = '/save';
+const API1 = '/get-api-1';
+const API2 = '/get-api-2';
 const BASE = "/api"
 module.exports = {
-    BASE, GET, SAVE
+    BASE, API1, API2
 }
