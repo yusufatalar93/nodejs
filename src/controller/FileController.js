@@ -1,52 +1,43 @@
 const fs = require("fs");
 
-const createFile = (file, callback) => {
+const createFile = async (file) => {
     fs.open(file, 'a', (err) => {
         if (err) {
-            console.error(err);
-            callback(false);
-        } else {
-            callback(true);
+            throw err;
         }
     });
 };
-const writeToFile = (file, content, callback) => {
+const writeToFile = async (file, content, callback) => {
     fs.appendFile(file, content, (err) => {
         if (err) {
-            callback(false);
+            throw err;
         }
-        callback(true);
     });
 }
 
-const readFile = (file, callback) => {
+const readFile = async (file, callback) => {
     fs.readFile(file, 'utf8', (err, data) => {
         if (err) {
-            console.error(err);
+            console.error(`Error occurred while file is reading.Error = ${err}`);
             callback(null);
         } else {
             callback(data);
         }
     });
 }
-const renameFile = (oldFile, newFile, callback) => {
+const renameFile= async (oldFile, newFile) => {
     fs.rename(oldFile, newFile, (err) => {
         if (err) {
-            console.error(err);
-            callback(false);
-        } else {
-            callback(true);
+            throw err;
         }
     });
 }
 
-const deleteFile = (file, callback) => {
+
+const deleteFile = async (file) => {
     fs.unlink(file, (err) => {
         if (err) {
-            console.error(err);
-            callback(false);
-        } else {
-            callback(true);
+            throw err;
         }
     });
 

@@ -8,7 +8,7 @@ const dbConnection = mysql.createConnection({
     database: process.env.DB_NAME,
     port: process.env.DB_PORT
 });
-dbConnection.connect(function (err) {
+dbConnection.connect((err) => {
     if (err) throw err;
     console.log("Connected!");
 });
