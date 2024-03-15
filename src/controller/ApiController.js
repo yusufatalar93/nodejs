@@ -1,6 +1,7 @@
 const {writeToFile, readFile, deleteFile} = require("./FileController")
 const {saveData} = require("../service/ApiService");
-const {API_1_FILE_NAME, API_2_FILE_NAME} = require("../util/constant/constants")
+const {API_1_FILE_NAME, API_2_FILE_NAME} = require("../util/constant/constants");
+const {logger} = require("../config/idex");
 
 const api1 = async (req, res) => {
     const result = Math.random() < 0.5 ? "1" : "0";
@@ -10,7 +11,7 @@ const api1 = async (req, res) => {
             message: `Result = ${result}`
         });
     } catch (err) {
-        console.error(`Error occurred while writing result to file. Error = ${err}`);
+        logger.error(`Error occurred while writing result to file. Error = ${err}`);
         res.status(500).json({
             error: "Internal server error"
         });
@@ -25,7 +26,7 @@ const api2 = async (req, res) => {
             message: `Result = ${result}`
         });
     } catch (err) {
-        console.error(`Error occurred while writing result to file. Error = ${err}`);
+        logger.error(`Error occurred while writing result to file. Error = ${err}`);
         res.status(500).json({
             error: "Internal server error"
         });
@@ -38,13 +39,13 @@ const seekData = async (file, name) => {
         if (data != null) {
             await saveData(data, name);
             await deleteFile(file);
-            console.error(`File successfully deleted. File = ${file}`);
-            console.log(`Data for api ${name} successfully saved`);
+            logger.error(`File successfully deleted. File = ${file}`);
+            logger.info(`Data for api ${name} successfully saved`);
         } else {
-            console.log("No insertion because no data exist");
+            logger.info("No insertion because no data exist");
         }
     } catch (err) {
-        console.error(`Error occurred while saving data process. Error =  ${err}`);
+        logger.error(`Error occurred while saving data process. Error =  ${err}`);
         throw err;
     }
 }
