@@ -1,5 +1,6 @@
 const mysql = require('mysql2');
 const dotenv = require('dotenv');
+const logger = require("./winston-logger")
 dotenv.config();
 const dbConnection = mysql.createConnection({
     host: process.env.DB_URL,
@@ -10,6 +11,6 @@ const dbConnection = mysql.createConnection({
 });
 dbConnection.connect((err) => {
     if (err) throw err;
-    console.log("Connected to database");
+    logger.info("Connected to database");
 });
 module.exports = {dbConnection};
